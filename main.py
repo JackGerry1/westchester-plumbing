@@ -27,20 +27,49 @@ def get_room_type():
             return room_type
 
 
-def calculate_btu(units, room_type, height, length, width):
+def get_facing_direction():
+    return get_bool_input("Is the room facing North? (yes/no): ")
+
+
+def get_french_windows():
+    return get_bool_input("Does the room have French windows? (yes/no): ")
+
+
+def get_double_glazing():
+    return get_bool_input("Does the room have double glazing? (yes/no): ")
+
+
+def get_bool_input(prompt):
+    while True:
+        value = input(prompt).lower()
+        if value in ['yes', 'no']:
+            return value
+        print("Invalid input. Please enter 'yes' or 'no'.")
+
+
+def calculate_btu(units, room_type, height, length, width, facing, french_windows, double_glazing):
     result = height * length * width
 
     if room_type in ['lounge', 'dining room', 'bathroom']:
         result *= 5
 
-    if room_type in ['bedroom']:
+    elif room_type in ['bedroom']:
         result *= 4
 
-    if room_type in ['kitchen', 'hallway']:
+    elif room_type in ['kitchen', 'hallway']:
         result *= 3
 
     if units == "metres":
         result *= 35.3
+
+    if facing == "yes":
+        result *= 1.15
+
+    if french_windows == "yes":
+        result *= 1.20
+
+    if double_glazing == "yes":
+        result *= 0.90
 
     return result
 
@@ -51,13 +80,20 @@ def main():
 
     height = get_valid_float_input(
         f"Enter the height of the room in {units}: ")
+
     length = get_valid_float_input(
         f"Enter the length of the room in {units}: ")
+
     width = get_valid_float_input(f"Enter the width of the room in {units}: ")
 
-    result = calculate_btu(units, room_type, height, length, width)
-    result_str = "{:.1f}".format(result)
+    facing = get_facing_direction()
+    french_windows = get_french_windows()
+    double_glazing = get_double_glazing()
+
+    result = calculate_btu(units, room_type, height, length, width, facing, french_windows, double_glazing)
     
+    result_str = "{:.1f}".format(result)
+
     print(f"{result_str} BTUs (British Thermal Units)")
 
 
